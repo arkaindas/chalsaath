@@ -1,7 +1,7 @@
 {
-  "name": "IndasYatri — ইন্দাসযাত্রী",
-  "short_name": "IndasYatri",
-  "description": "Share rides, save money, travel together. Hyperlocal cab sharing for West Bengal.",
+  "name": "ChalSaath",
+  "short_name": "ChalSaath",
+  "description": "Har safar mein ek saathi. Hyperlocal ride-sharing across India's cities.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#e8e0d4",

@@ -8,7 +8,7 @@ import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { useLang } from '@/context/LangContext';
 import { useAuth } from '@/context/AuthContext';
 import { useAlerts } from '@/hooks/useAlerts';
-import { getUserAlerts } from '@indasyatri/shared';
+import { getUserAlerts } from '@chalsaath/shared';
 
 function AlertsContent() {
   const { t } = useLang();

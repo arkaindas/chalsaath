@@ -7,8 +7,8 @@ import { useLang } from '@/context/LangContext';
 import { useAuth } from '@/context/AuthContext';
 import { useApprovedRoutes } from '@/hooks/useRoutes';
 import { useToast } from '@/components/common/Toast';
-import { createAlert, requestNotificationPermission } from '@indasyatri/shared';
-import { todayString } from '@indasyatri/shared';
+import { createAlert, requestNotificationPermission } from '@chalsaath/shared';
+import { todayString } from '@chalsaath/shared';
 
 export function AlertSubscribeForm({ onCreated }: { onCreated?: () => void }) {
   const { t } = useLang();

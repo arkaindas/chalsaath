@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { useLang } from '@/context/LangContext';
 import { useToast } from '@/components/common/Toast';
-import { getAllRides, updateRideStatus, type Ride } from '@indasyatri/shared';
-import { formatTime } from '@indasyatri/shared';
+import { getAllRides, updateRideStatus, type Ride } from '@chalsaath/shared';
+import { formatTime } from '@chalsaath/shared';
 import { NeuBadge } from '@/components/ui/NeuBadge';
 import { NeuButton } from '@/components/ui/NeuButton';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';

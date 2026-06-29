@@ -4,21 +4,24 @@ import './globals.css';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { LangProvider } from '@/context/LangContext';
 import { AuthProvider } from '@/context/AuthContext';
+import { CityProvider } from '@/context/CityContext';
 import { ToastProvider } from '@/components/common/Toast';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { MobileNav } from '@/components/layout/MobileNav';
 import PWABanner from '@/components/common/PWABanner';
+import { CitySelector } from '@/components/city/CitySelector';
+import { CityBottomSheet } from '@/components/city/CityBottomSheet';
 
 export const metadata: Metadata = {
-  title: 'IndasYatri — ইন্দাসযাত্রী',
-  description: 'Share rides, save money, travel together. Hyperlocal cab sharing for West Bengal.',
+  title: 'ChalSaath — Har safar mein ek saathi',
+  description: 'Har safar mein ek saathi. Hyperlocal ride-sharing across India\'s cities.',
   manifest: '/manifest.json',
   openGraph: {
-    title: 'IndasYatri',
-    description: 'Share rides, save money, travel together.',
-    url: 'https://indasyatri.vercel.app',
-    siteName: 'IndasYatri',
+    title: 'ChalSaath',
+    description: 'Har safar mein ek saathi.',
+    url: 'https://chalsaath.vercel.app',
+    siteName: 'ChalSaath',
   },
 };
 
@@ -28,6 +31,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Noto+Sans+Devanagari:wght@400;600&display=swap"
+          rel="stylesheet"
+        />
       </head>
       <body>
         <Script
@@ -40,15 +47,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider>
           <LangProvider>
             <AuthProvider>
-              <ToastProvider>
-                <Header />
-                <main className="max-w-5xl mx-auto px-4 pt-6 pb-24 md:pb-6 min-h-screen">
-                  {children}
-                </main>
-                <Footer />
-                <MobileNav />
-                <PWABanner />
-              </ToastProvider>
+              <CityProvider>
+                <ToastProvider>
+                  <CitySelector />
+                  <CityBottomSheet />
+                  <Header />
+                  <main className="max-w-5xl mx-auto px-4 pt-6 pb-24 md:pb-6 min-h-screen">
+                    {children}
+                  </main>
+                  <Footer />
+                  <MobileNav />
+                  <PWABanner />
+                </ToastProvider>
+              </CityProvider>
             </AuthProvider>
           </LangProvider>
         </ThemeProvider>

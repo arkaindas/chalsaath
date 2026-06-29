@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { signInWithGoogle, signOut } from '@indasyatri/shared';
+import { signInWithGoogle, signOut } from '@chalsaath/shared';
 import { useAuth } from '@/context/AuthContext';
 import { useLang } from '@/context/LangContext';
 

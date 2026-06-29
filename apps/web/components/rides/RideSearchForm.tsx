@@ -6,7 +6,7 @@ import { NeuSelect } from '@/components/ui/NeuSelect';
 import { NeuButton } from '@/components/ui/NeuButton';
 import { useLang } from '@/context/LangContext';
 import { useApprovedRoutes } from '@/hooks/useRoutes';
-import { todayString } from '@indasyatri/shared';
+import { todayString } from '@chalsaath/shared';
 
 interface Props {
   defaultFrom?: string;

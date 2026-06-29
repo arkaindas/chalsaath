@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getSettings, type AppSettings } from '@indasyatri/shared';
-import { DEFAULT_SETTINGS } from '@indasyatri/shared';
+import { getSettings, type AppSettings } from '@chalsaath/shared';
+import { DEFAULT_SETTINGS } from '@chalsaath/shared';
 
 export function useSettings() {
   const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS);

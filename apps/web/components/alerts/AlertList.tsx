@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import type { RideAlert } from '@indasyatri/shared';
-import { deleteAlert } from '@indasyatri/shared';
+import type { RideAlert } from '@chalsaath/shared';
+import { deleteAlert } from '@chalsaath/shared';
 import { NeuButton } from '@/components/ui/NeuButton';
 import { useLang } from '@/context/LangContext';
 import { useToast } from '@/components/common/Toast';

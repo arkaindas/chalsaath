@@ -1,7 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['@indasyatri/shared'],
+  transpilePackages: ['@chalsaath/shared'],
   images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'api.dicebear.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com', // Google profile photos
+      }],
+      
     domains: ['lh3.googleusercontent.com'],
   },
   experimental: {

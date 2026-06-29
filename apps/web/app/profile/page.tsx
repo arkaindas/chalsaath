@@ -11,7 +11,7 @@ import { useLang } from '@/context/LangContext';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import { useToast } from '@/components/common/Toast';
-import { updateUser } from '@indasyatri/shared';
+import { updateUser } from '@chalsaath/shared';
 
 function ProfileForm() {
   const { t, lang, setLang } = useLang();
@@ -108,10 +108,10 @@ function ProfileForm() {
           label={t('profile.language')}
           options={[
             { value: 'en', label: 'English' },
-            { value: 'bn', label: 'বাংলা' },
+            { value: 'hi', label: 'हिंदी' },
           ]}
           value={lang}
-          onChange={(e) => setLang(e.target.value as 'en' | 'bn')}
+          onChange={(e) => setLang(e.target.value as 'en' | 'hi')}
         />
 
         <NeuSelect

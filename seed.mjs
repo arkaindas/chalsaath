@@ -1,6 +1,6 @@
 /**
- * IndasYatri — Firebase Seed Script
- * Clears old data then seeds routes and rides for next 7 days.
+ * ChalSaath — Firebase Seed Script
+ * Clears old data then seeds cities, routes and rides.
  *
  * Usage:
  *   node seed.mjs
@@ -18,43 +18,50 @@ import {
 } from "firebase/firestore";
 
 // ─── FIREBASE CONFIG ─────────────────────────────────────────────────────────
+// Replace with your chalsaath Firebase project credentials
 const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyDBg-0vX4ZS3wSev2G2JCY9We8XcREVUD4",
-  authDomain: "indasyatri.firebaseapp.com",
-  projectId: "indasyatri",
-  storageBucket: "indasyatri.firebasestorage.app",
-  messagingSenderId: "120216474792",
-  appId: "1:120216474792:web:95c5d0e5c74f3f4c2a5e9d",
+  apiKey: process.env.FIREBASE_API_KEY || "YOUR_API_KEY",
+  authDomain: "chalsaath.firebaseapp.com",
+  projectId: process.env.FIREBASE_PROJECT_ID || "chalsaath",
+  storageBucket: "chalsaath.firebasestorage.app",
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || "YOUR_SENDER_ID",
+  appId: process.env.FIREBASE_APP_ID || "YOUR_APP_ID",
 };
 
 const app = initializeApp(FIREBASE_CONFIG);
 const db = getFirestore(app);
 
+// ─── CITIES ───────────────────────────────────────────────────────────────────
+const CITIES = [
+  { id: "bankura",  name: "Bankura",  nameHi: "बाँकुड़ा",   state: "West Bengal",    isActive: true, adminUids: [], totalRides: 0 },
+  { id: "kolkata",  name: "Kolkata",  nameHi: "कोलकाता",    state: "West Bengal",    isActive: true, adminUids: [], totalRides: 0 },
+  { id: "raipur",   name: "Raipur",   nameHi: "रायपुर",     state: "Chhattisgarh",   isActive: true, adminUids: [], totalRides: 0 },
+];
+
 // ─── ROUTES ──────────────────────────────────────────────────────────────────
 const ROUTES = [
-  // ── Original routes ──
-  { from: "Indas",     to: "Kolkata",      fromBn: "ইন্দাস",    toBn: "কলকাতা",    distance: "120 km", estimatedTime: "3 hours",   suggestedFareMin: 250, suggestedFareMax: 400 },
-  { from: "Bankura",   to: "Kolkata",      fromBn: "বাঁকুড়া",   toBn: "কলকাতা",    distance: "230 km", estimatedTime: "5 hours",   suggestedFareMin: 400, suggestedFareMax: 600 },
-  { from: "Bishnupur", to: "Kolkata",      fromBn: "বিষ্ণুপুর",  toBn: "কলকাতা",    distance: "200 km", estimatedTime: "4.5 hours", suggestedFareMin: 350, suggestedFareMax: 550 },
-  { from: "Durgapur",  to: "Kolkata",      fromBn: "দুর্গাপুর",  toBn: "কলকাতা",    distance: "180 km", estimatedTime: "3.5 hours", suggestedFareMin: 300, suggestedFareMax: 500 },
-  { from: "Indas",     to: "Bankura",      fromBn: "ইন্দাস",    toBn: "বাঁকুড়া",   distance: "45 km",  estimatedTime: "1.5 hours", suggestedFareMin: 100, suggestedFareMax: 200 },
-  { from: "Bankura",   to: "Durgapur",     fromBn: "বাঁকুড়া",   toBn: "দুর্গাপুর",  distance: "80 km",  estimatedTime: "2 hours",   suggestedFareMin: 150, suggestedFareMax: 250 },
-  { from: "Indas",     to: "Bishnupur",    fromBn: "ইন্দাস",    toBn: "বিষ্ণুপুর",  distance: "35 km",  estimatedTime: "1 hour",    suggestedFareMin: 80,  suggestedFareMax: 150 },
-  { from: "Bishnupur", to: "Durgapur",     fromBn: "বিষ্ণুপুর",  toBn: "দুর্গাপুর",  distance: "90 km",  estimatedTime: "2.5 hours", suggestedFareMin: 150, suggestedFareMax: 280 },
-  // ── New routes ──
-  { from: "Indas",     to: "Burdwan",      fromBn: "ইন্দাস",    toBn: "বর্ধমান",    distance: "90 km",  estimatedTime: "2.5 hours", suggestedFareMin: 150, suggestedFareMax: 280 },
-  { from: "Burdwan",   to: "Kolkata",      fromBn: "বর্ধমান",    toBn: "কলকাতা",    distance: "100 km", estimatedTime: "2.5 hours", suggestedFareMin: 200, suggestedFareMax: 350 },
-  { from: "Asansol",   to: "Kolkata",      fromBn: "আসানসোল",   toBn: "কলকাতা",    distance: "200 km", estimatedTime: "4 hours",   suggestedFareMin: 350, suggestedFareMax: 550 },
-  { from: "Asansol",   to: "Durgapur",     fromBn: "আসানসোল",   toBn: "দুর্গাপুর",  distance: "40 km",  estimatedTime: "1 hour",    suggestedFareMin: 80,  suggestedFareMax: 150 },
-  { from: "Arambagh",  to: "Kolkata",      fromBn: "আরামবাগ",   toBn: "কলকাতা",    distance: "100 km", estimatedTime: "2.5 hours", suggestedFareMin: 200, suggestedFareMax: 350 },
-  { from: "Arambagh",  to: "Karunamoyee",  fromBn: "আরামবাগ",   toBn: "করুণাময়ী",  distance: "20 km",  estimatedTime: "45 mins",   suggestedFareMin: 60,  suggestedFareMax: 120 },
-  { from: "Kotulpur",  to: "Kolkata",      fromBn: "কোতুলপুর",  toBn: "কলকাতা",    distance: "130 km", estimatedTime: "3 hours",   suggestedFareMin: 250, suggestedFareMax: 400 },
-  { from: "Kotulpur",  to: "Bankura",      fromBn: "কোতুলপুর",  toBn: "বাঁকুড়া",   distance: "35 km",  estimatedTime: "1 hour",    suggestedFareMin: 80,  suggestedFareMax: 150 },
-  { from: "Kotulpur",  to: "Bishnupur",    fromBn: "কোতুলপুর",  toBn: "বিষ্ণুপুর",  distance: "25 km",  estimatedTime: "45 mins",   suggestedFareMin: 60,  suggestedFareMax: 120 },
-  { from: "Burdwan",   to: "Durgapur",     fromBn: "বর্ধমান",    toBn: "দুর্গাপুর",  distance: "50 km",  estimatedTime: "1.5 hours", suggestedFareMin: 100, suggestedFareMax: 180 },
-  { from: "Burdwan",   to: "Asansol",      fromBn: "বর্ধমান",    toBn: "আসানসোল",   distance: "60 km",  estimatedTime: "1.5 hours", suggestedFareMin: 120, suggestedFareMax: 200 },
-  { from: "Karunamoyee", to: "Kolkata",    fromBn: "করুণাময়ী",  toBn: "কলকাতা",    distance: "15 km",  estimatedTime: "45 mins",   suggestedFareMin: 50,  suggestedFareMax: 100 },
-  { from: "Indas",     to: "Arambagh",     fromBn: "ইন্দাস",    toBn: "আরামবাগ",   distance: "30 km",  estimatedTime: "1 hour",    suggestedFareMin: 70,  suggestedFareMax: 130 },
+  // ── Bankura city routes ──
+  { cityId: "bankura", from: "Indas",      to: "Kolkata",      fromHi: "इंदास",       toHi: "कोलकाता",     distance: "120 km",  estimatedTime: "3 hours",    suggestedFareMin: 250, suggestedFareMax: 400 },
+  { cityId: "bankura", from: "Bankura",    to: "Kolkata",      fromHi: "बाँकुड़ा",    toHi: "कोलकाता",     distance: "230 km",  estimatedTime: "5 hours",    suggestedFareMin: 400, suggestedFareMax: 600 },
+  { cityId: "bankura", from: "Bishnupur",  to: "Kolkata",      fromHi: "बिष्णुपुर",   toHi: "कोलकाता",     distance: "200 km",  estimatedTime: "4.5 hours",  suggestedFareMin: 350, suggestedFareMax: 550 },
+  { cityId: "bankura", from: "Durgapur",   to: "Kolkata",      fromHi: "दुर्गापुर",   toHi: "कोलकाता",     distance: "180 km",  estimatedTime: "3.5 hours",  suggestedFareMin: 300, suggestedFareMax: 500 },
+  { cityId: "bankura", from: "Indas",      to: "Bankura",      fromHi: "इंदास",       toHi: "बाँकुड़ा",    distance: "45 km",   estimatedTime: "1.5 hours",  suggestedFareMin: 100, suggestedFareMax: 200 },
+  { cityId: "bankura", from: "Bankura",    to: "Durgapur",     fromHi: "बाँकुड़ा",    toHi: "दुर्गापुर",   distance: "80 km",   estimatedTime: "2 hours",    suggestedFareMin: 150, suggestedFareMax: 250 },
+  { cityId: "bankura", from: "Indas",      to: "Bishnupur",    fromHi: "इंदास",       toHi: "बिष्णुपुर",   distance: "35 km",   estimatedTime: "1 hour",     suggestedFareMin: 80,  suggestedFareMax: 150 },
+  { cityId: "bankura", from: "Bishnupur",  to: "Durgapur",     fromHi: "बिष्णुपुर",   toHi: "दुर्गापुर",   distance: "90 km",   estimatedTime: "2.5 hours",  suggestedFareMin: 150, suggestedFareMax: 280 },
+  { cityId: "bankura", from: "Burdwan",    to: "Kolkata",      fromHi: "बर्दवान",      toHi: "कोलकाता",     distance: "100 km",  estimatedTime: "2.5 hours",  suggestedFareMin: 200, suggestedFareMax: 350 },
+  { cityId: "bankura", from: "Asansol",    to: "Durgapur",     fromHi: "आसनसोल",      toHi: "दुर्गापुर",   distance: "40 km",   estimatedTime: "1 hour",     suggestedFareMin: 80,  suggestedFareMax: 150 },
+  { cityId: "bankura", from: "Kotulpur",   to: "Bankura",      fromHi: "कोतुलपुर",    toHi: "बाँकुड़ा",    distance: "35 km",   estimatedTime: "1 hour",     suggestedFareMin: 80,  suggestedFareMax: 150 },
+  // ── Kolkata city routes ──
+  { cityId: "kolkata", from: "Kolkata",    to: "Asansol",      fromHi: "कोलकाता",     toHi: "आसनसोल",     distance: "200 km",  estimatedTime: "4 hours",    suggestedFareMin: 350, suggestedFareMax: 550 },
+  { cityId: "kolkata", from: "Kolkata",    to: "Durgapur",     fromHi: "कोलकाता",     toHi: "दुर्गापुर",   distance: "180 km",  estimatedTime: "3.5 hours",  suggestedFareMin: 300, suggestedFareMax: 500 },
+  { cityId: "kolkata", from: "Kolkata",    to: "Bankura",      fromHi: "कोलकाता",     toHi: "बाँकुड़ा",    distance: "230 km",  estimatedTime: "5 hours",    suggestedFareMin: 400, suggestedFareMax: 600 },
+  { cityId: "kolkata", from: "Kolkata",    to: "Arambagh",     fromHi: "कोलकाता",     toHi: "आरामबाग",    distance: "100 km",  estimatedTime: "2.5 hours",  suggestedFareMin: 200, suggestedFareMax: 350 },
+  // ── Raipur city routes ──
+  { cityId: "raipur",  from: "Raipur",     to: "Bilaspur",     fromHi: "रायपुर",      toHi: "बिलासपुर",   distance: "130 km",  estimatedTime: "2.5 hours",  suggestedFareMin: 200, suggestedFareMax: 350 },
+  { cityId: "raipur",  from: "Raipur",     to: "Durg",         fromHi: "रायपुर",      toHi: "दुर्ग",       distance: "30 km",   estimatedTime: "45 mins",    suggestedFareMin: 80,  suggestedFareMax: 150 },
+  { cityId: "raipur",  from: "Raipur",     to: "Rajnandgaon",  fromHi: "रायपुर",      toHi: "राजनांदगाँव", distance: "70 km",   estimatedTime: "1.5 hours",  suggestedFareMin: 120, suggestedFareMax: 200 },
+  { cityId: "raipur",  from: "Raipur",     to: "Jagdalpur",    fromHi: "रायपुर",      toHi: "जगदलपुर",    distance: "300 km",  estimatedTime: "6 hours",    suggestedFareMin: 500, suggestedFareMax: 800 },
 ];
 
 // ─── SAMPLE DRIVERS ──────────────────────────────────────────────────────────
@@ -62,7 +69,7 @@ const DRIVERS = [
   { uid: "seed_driver_001", name: "Raju Mondal",   phone: "9832100001", whatsapp: "9832100001", photoURL: "https://api.dicebear.com/7.x/thumbs/svg?seed=raju" },
   { uid: "seed_driver_002", name: "Suresh Das",    phone: "9832100002", whatsapp: "9832100002", photoURL: "https://api.dicebear.com/7.x/thumbs/svg?seed=suresh" },
   { uid: "seed_driver_003", name: "Amit Ghosh",    phone: "9832100003", whatsapp: "9832100003", photoURL: "https://api.dicebear.com/7.x/thumbs/svg?seed=amit" },
-  { uid: "seed_driver_004", name: "Bikash Soren",  phone: "9832100004", whatsapp: "9832100004", photoURL: "https://api.dicebear.com/7.x/thumbs/svg?seed=bikash" },
+  { uid: "seed_driver_004", name: "Vikram Singh",  phone: "9832100004", whatsapp: "9832100004", photoURL: "https://api.dicebear.com/7.x/thumbs/svg?seed=vikram" },
   { uid: "seed_driver_005", name: "Prasanta Roy",  phone: "9832100005", whatsapp: "9832100005", photoURL: "https://api.dicebear.com/7.x/thumbs/svg?seed=prasanta" },
 ];
 
@@ -73,8 +80,8 @@ const VEHICLES = [
   { type: "SUV",      model: "Mahindra Scorpio",    number: "WB 26 Z 9012" },
   { type: "MUV/MPV", model: "Maruti Ertiga",        number: "WB 27 A 3456" },
   { type: "Hatchback", model: "Maruti WagonR",      number: "WB 29 B 7890" },
-  { type: "SUV",      model: "Hyundai Creta",       number: "WB 26 C 2345" },
-  { type: "MUV/MPV", model: "Toyota Innova",        number: "WB 28 D 6789" },
+  { type: "SUV",      model: "Hyundai Creta",       number: "CG 04 C 2345" },
+  { type: "MUV/MPV", model: "Toyota Innova",        number: "CG 04 D 6789" },
   { type: "Sedan",    model: "Hyundai Aura",        number: "WB 27 E 0123" },
 ];
 
@@ -113,7 +120,7 @@ function slugId(str) {
 
 // ─── CLEAR OLD DATA ───────────────────────────────────────────────────────────
 async function clearOldData() {
-  console.log("\n🗑️  Clearing old routes and rides...");
+  console.log("\n🗑️  Clearing old data...");
 
   const routeSnap = await getDocs(collection(db, "routes"));
   for (const d of routeSnap.docs) await deleteDoc(d.ref);
@@ -124,21 +131,34 @@ async function clearOldData() {
   console.log(`  Deleted ${rideSnap.size} old rides`);
 }
 
+// ─── SEED CITIES ─────────────────────────────────────────────────────────────
+async function seedCities() {
+  console.log("\n🏙️  Seeding cities...");
+  for (const city of CITIES) {
+    await setDoc(doc(db, "cities", city.id), {
+      ...city,
+      createdAt: Timestamp.now(),
+    });
+    console.log(`  ✅ ${city.name} (${city.nameHi})`);
+  }
+}
+
 // ─── SEED ROUTES ─────────────────────────────────────────────────────────────
 async function seedRoutes() {
   console.log("\n📍 Seeding routes...");
   const createdRouteIds = {};
 
   for (const route of ROUTES) {
-    const fwdId = `route_${slugId(route.from)}_${slugId(route.to)}`;
-    const pairId = `pair_${slugId(route.from)}_${slugId(route.to)}`;
+    const fwdId = `route_${route.cityId}_${slugId(route.from)}_${slugId(route.to)}`;
+    const pairId = `pair_${route.cityId}_${slugId(route.from)}_${slugId(route.to)}`;
 
     await setDoc(doc(db, "routes", fwdId), {
       id: fwdId,
+      cityId: route.cityId,
       from: route.from,
       to: route.to,
-      fromBn: route.fromBn,
-      toBn: route.toBn,
+      fromHi: route.fromHi,
+      toHi: route.toHi,
       status: "approved",
       submittedBy: null,
       submittedByName: null,
@@ -151,16 +171,17 @@ async function seedRoutes() {
       pairId,
       createdAt: Timestamp.now(),
     });
-    console.log(`  ✅ ${route.from} → ${route.to} (${fwdId})`);
-    createdRouteIds[`${route.from}_${route.to}`] = fwdId;
+    console.log(`  ✅ [${route.cityId}] ${route.from} → ${route.to}`);
+    createdRouteIds[`${route.cityId}_${route.from}_${route.to}`] = fwdId;
 
-    const revId = `route_${slugId(route.to)}_${slugId(route.from)}`;
+    const revId = `route_${route.cityId}_${slugId(route.to)}_${slugId(route.from)}`;
     await setDoc(doc(db, "routes", revId), {
       id: revId,
+      cityId: route.cityId,
       from: route.to,
       to: route.from,
-      fromBn: route.toBn,
-      toBn: route.fromBn,
+      fromHi: route.toHi,
+      toHi: route.fromHi,
       status: "approved",
       submittedBy: null,
       submittedByName: null,
@@ -173,8 +194,8 @@ async function seedRoutes() {
       pairId,
       createdAt: Timestamp.now(),
     });
-    console.log(`  ✅ ${route.to} → ${route.from} (${revId})`);
-    createdRouteIds[`${route.to}_${route.from}`] = revId;
+    console.log(`  ✅ [${route.cityId}] ${route.to} → ${route.from}`);
+    createdRouteIds[`${route.cityId}_${route.to}_${route.from}`] = revId;
   }
 
   return createdRouteIds;
@@ -187,11 +208,14 @@ async function seedDrivers() {
     await setDoc(doc(db, "users", driver.uid), {
       uid: driver.uid,
       name: driver.name,
-      email: `${slugId(driver.name)}@seed.indasyatri.app`,
+      email: `${slugId(driver.name)}@seed.chalsaath.app`,
       photoURL: driver.photoURL,
       phone: driver.phone,
       whatsapp: driver.whatsapp,
       role: "user",
+      adminCities: [],
+      selectedCity: "bankura",
+      homeCities: ["bankura"],
       tripsPosted: 0,
       tripsCompleted: 0,
       isBanned: false,
@@ -210,27 +234,26 @@ async function seedRides(routeIds) {
   let totalRides = 0;
 
   const allRoutes = [
-    ...ROUTES.map(r => ({ from: r.from, to: r.to, fareMin: r.suggestedFareMin, fareMax: r.suggestedFareMax })),
-    ...ROUTES.map(r => ({ from: r.to, to: r.from, fareMin: r.suggestedFareMin, fareMax: r.suggestedFareMax })),
+    ...ROUTES.map(r => ({ cityId: r.cityId, from: r.from, to: r.to, fareMin: r.suggestedFareMin, fareMax: r.suggestedFareMax })),
+    ...ROUTES.map(r => ({ cityId: r.cityId, from: r.to, to: r.from, fareMin: r.suggestedFareMin, fareMax: r.suggestedFareMax })),
   ];
 
   for (const route of allRoutes) {
-    const routeId = routeIds[`${route.from}_${route.to}`];
+    const routeId = routeIds[`${route.cityId}_${route.from}_${route.to}`];
     if (!routeId) continue;
 
-    const ridesPerRoute = Math.floor(Math.random() * 2) + 3; // 3 or 4
+    const ridesPerRoute = Math.floor(Math.random() * 2) + 2; // 2 or 3
     const usedDays = new Set();
 
     for (let r = 0; r < ridesPerRoute; r++) {
       let day;
-      // +1 ensures tomorrow onwards (never today)
       do { day = Math.floor(Math.random() * 7) + 1; } while (usedDays.has(day));
       usedDays.add(day);
 
       const driver = randomFrom(DRIVERS);
       const vehicle = randomFrom(VEHICLES);
       const time = randomFrom(TIMES);
-      const totalSeats = Math.floor(Math.random() * 3) + 2; // 2-4
+      const totalSeats = Math.floor(Math.random() * 3) + 2;
       const bookedSeats = Math.floor(Math.random() * (totalSeats - 1));
       const availableSeats = totalSeats - bookedSeats;
       const fare = route.fareMin + Math.floor(Math.random() * (route.fareMax - route.fareMin));
@@ -238,10 +261,11 @@ async function seedRides(routeIds) {
       const dateStr = getDateString(day);
       const note = randomFrom(NOTES_POOL);
 
-      const rideId = `ride_${slugId(route.from)}_${slugId(route.to)}_${dateStr}_${time.replace(":", "")}_${driver.uid.slice(-3)}`;
+      const rideId = `ride_${route.cityId}_${slugId(route.from)}_${slugId(route.to)}_${dateStr}_${time.replace(":", "")}_${driver.uid.slice(-3)}`;
 
       await setDoc(doc(db, "rides", rideId), {
         id: rideId,
+        cityId: route.cityId,
         routeId,
         routeFrom: route.from,
         routeTo: route.to,
@@ -264,7 +288,7 @@ async function seedRides(routeIds) {
         updatedAt: Timestamp.now(),
       });
 
-      console.log(`  ✅ ${route.from} → ${route.to} | ${dateStr} ${time} | ${driver.name} | ${vehicle.model} | ₹${roundedFare} | ${availableSeats}/${totalSeats} seats`);
+      console.log(`  ✅ [${route.cityId}] ${route.from} → ${route.to} | ${dateStr} ${time} | ${driver.name} | ₹${roundedFare}`);
       totalRides++;
     }
   }
@@ -278,7 +302,7 @@ async function seedSettings() {
   await setDoc(doc(db, "settings", "general"), {
     upcomingRideDays: 7,
     maxSeatsPerRide: 7,
-    appName: "IndasYatri",
+    appName: "ChalSaath",
     maintenanceMode: false,
   });
   console.log("  ✅ Settings saved");
@@ -286,22 +310,24 @@ async function seedSettings() {
 
 // ─── MAIN ─────────────────────────────────────────────────────────────────────
 async function main() {
-  console.log("🚀 IndasYatri Seed Script Starting...");
+  console.log("🚀 ChalSaath Seed Script Starting...");
   console.log("📡 Connecting to Firebase...");
 
   try {
     await clearOldData();
+    await seedCities();
     const routeIds = await seedRoutes();
     await seedDrivers();
     const totalRides = await seedRides(routeIds);
     await seedSettings();
 
     console.log("\n✨ Seed complete!");
+    console.log(`   Cities created : ${CITIES.length}`);
     console.log(`   Routes created : ${ROUTES.length * 2} (${ROUTES.length} forward + ${ROUTES.length} reverse)`);
     console.log(`   Drivers created: ${DRIVERS.length}`);
     console.log(`   Rides created  : ${totalRides}`);
     console.log("\n🌐 Visit your app and check the homepage — rides should appear!");
-    console.log("👉 Next: Go to Firestore → users → find YOUR document → set role to 'admin'");
+    console.log("👉 Next: Go to Firestore → users → find YOUR document → set role to 'admin' or 'superadmin'");
     process.exit(0);
   } catch (err) {
     console.error("\n❌ Seed failed:", err.message);

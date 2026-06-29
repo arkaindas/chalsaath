@@ -57,7 +57,7 @@ export default function PWABanner() {
 
       <div style={{ flex: 1, minWidth: 0 }}>
         <p style={{ margin: 0, fontWeight: 600, fontSize: 14, color: 'var(--text-primary, #3d3428)' }}>
-          Install IndasYatri
+          Install ChalSaath
         </p>
         <p style={{ margin: 0, fontSize: 12, color: 'var(--text-secondary, #7a6e5d)', marginTop: 2 }}>
           {isIOS ? 'Tap Share → Add to Home Screen' : 'Install for faster access & offline use'}

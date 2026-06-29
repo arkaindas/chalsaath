@@ -8,11 +8,11 @@ export function LangToggle() {
 
   return (
     <button
-      onClick={() => setLang(lang === 'en' ? 'bn' : 'en')}
+      onClick={() => setLang(lang === 'en' ? 'hi' : 'en')}
       className="neu-btn !py-1.5 !px-3 text-sm font-semibold"
       aria-label="Toggle language"
     >
-      {lang === 'en' ? 'বাং' : 'EN'}
+      {lang === 'en' ? 'हि' : 'EN'}
     </button>
   );
 }

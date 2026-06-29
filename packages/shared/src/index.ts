@@ -4,6 +4,7 @@ export * from './types';
 // Constants
 export { VEHICLE_DATA, VEHICLE_TYPES } from './constants/vehicles';
 export { SEED_ROUTES } from './constants/routes';
+export { SEED_CITIES } from './constants/cities';
 export { DEFAULT_SETTINGS } from './constants/defaults';
 
 // i18n

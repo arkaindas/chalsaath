@@ -1,7 +1,7 @@
 {
   "app": {
-    "name": "IndasYatri",
-    "tagline": "Share rides, save money, travel together"
+    "name": "ChalSaath",
+    "tagline": "Har safar mein ek saathi"
   },
   "nav": {
     "home": "Home",
@@ -14,7 +14,7 @@
     "alerts": "Ride Alerts"
   },
   "home": {
-    "hero": "Your trusted ride-sharing companion for Bengal's small towns",
+    "hero": "Your trusted ride-sharing companion across India's cities",
     "heroSub": "Connect with drivers traveling your route. Share the journey, split the cost.",
     "upcomingRides": "Upcoming Rides",
     "popularRoutes": "Popular Routes",
@@ -78,8 +78,8 @@
     "suggestNew": "Suggest a New Route",
     "from": "From",
     "to": "To",
-    "fromBn": "From (Bengali)",
-    "toBn": "To (Bengali)",
+    "fromHi": "From (Hindi)",
+    "toHi": "To (Hindi)",
     "pending": "Your route suggestion is under review",
     "approved": "Approved",
     "rejected": "Rejected",
@@ -117,6 +117,7 @@
     "rides": "All Rides",
     "users": "Users",
     "settings": "Settings",
+    "cities": "Cities",
     "approve": "Approve",
     "reject": "Reject",
     "pendingRoutes": "Pending Route Requests",
@@ -130,7 +131,16 @@
     "unban": "Unban User",
     "cancel": "Cancel Ride",
     "seedRoutes": "Seed Initial Routes",
-    "maxSeats": "Max seats per ride"
+    "maxSeats": "Max seats per ride",
+    "selectCity": "Select City",
+    "allCities": "All Cities"
+  },
+  "city": {
+    "selectCity": "Select your city",
+    "searchCity": "Search cities...",
+    "changeCity": "Change city",
+    "noCity": "No cities found",
+    "selectPrompt": "Choose your city to see local rides"
   },
   "common": {
     "loading": "Loading...",

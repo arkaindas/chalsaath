@@ -1,4 +1,4 @@
-import { getFirebaseApp } from '@indasyatri/shared';
+import { getFirebaseApp } from '@chalsaath/shared';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 

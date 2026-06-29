@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { VEHICLE_DATA, VEHICLE_TYPES } from '@indasyatri/shared';
+import { VEHICLE_DATA, VEHICLE_TYPES } from '@chalsaath/shared';
 import { NeuSelect } from '@/components/ui/NeuSelect';
 import { NeuInput } from '@/components/ui/NeuInput';
 import { useLang } from '@/context/LangContext';

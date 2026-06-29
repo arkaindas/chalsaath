@@ -1,5 +1,5 @@
 import React from 'react';
-import { generateCallLink } from '@indasyatri/shared';
+import { generateCallLink } from '@chalsaath/shared';
 
 interface CallButtonProps {
   phone: string;

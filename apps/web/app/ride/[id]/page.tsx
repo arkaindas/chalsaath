@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getRide, createBooking, generateSimpleWhatsAppLink, type Ride } from '@indasyatri/shared';
-import { formatTime } from '@indasyatri/shared';
+import { getRide, createBooking, generateSimpleWhatsAppLink, type Ride } from '@chalsaath/shared';
+import { formatTime } from '@chalsaath/shared';
 import { WhatsAppButton } from '@/components/ui/WhatsAppButton';
 import { CallButton } from '@/components/ui/CallButton';
 import { NeuBadge } from '@/components/ui/NeuBadge';
@@ -51,7 +51,7 @@ export default function RideDetailPage() {
       // Auto-open WhatsApp so passenger can confirm booking with driver
       const waUrl = generateSimpleWhatsAppLink(
         ride.driverWhatsapp,
-        `Hi, I've booked a seat on your ${ride.date} ride from ${ride.routeFrom} to ${ride.routeTo} on IndasYatri. Please confirm my booking.`
+        `Hi, I've booked a seat on your ${ride.date} ride from ${ride.routeFrom} to ${ride.routeTo} on ChalSaath. Please confirm my booking.`
       );
       window.open(waUrl, '_blank', 'noopener,noreferrer');
       showToast("Seat booked! WhatsApp opened to confirm with driver.", 'success');
@@ -64,7 +64,7 @@ export default function RideDetailPage() {
 
   const handleShare = () => {
     if (navigator.share) {
-      navigator.share({ title: 'IndasYatri Ride', url: window.location.href });
+      navigator.share({ title: 'ChalSaath Ride', url: window.location.href });
     } else {
       navigator.clipboard.writeText(window.location.href);
       showToast('Link copied!', 'info');

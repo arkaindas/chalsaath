@@ -17,8 +17,8 @@ import {
   generateSimpleWhatsAppLink,
   type Booking,
   type Ride,
-} from '@indasyatri/shared';
-import { formatTime } from '@indasyatri/shared';
+} from '@chalsaath/shared';
+import { formatTime } from '@chalsaath/shared';
 
 function MyBookingsContent() {
   const { t } = useLang();
@@ -69,7 +69,7 @@ function MyBookingsContent() {
           const waLink = ride
             ? generateSimpleWhatsAppLink(
                 ride.driverWhatsapp,
-                `Hi, I've booked a seat on your ${booking.date} ride from ${booking.routeFrom} to ${booking.routeTo} on IndasYatri. Please confirm my booking.`
+                `Hi, I've booked a seat on your ${booking.date} ride from ${booking.routeFrom} to ${booking.routeTo} on ChalSaath. Please confirm my booking.`
               )
             : null;
 

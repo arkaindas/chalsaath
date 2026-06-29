@@ -1,4 +1,4 @@
-export function formatDate(dateStr: string, lang: 'en' | 'bn' = 'en'): string {
+export function formatDate(dateStr: string, lang: 'en' | 'hi' = 'en'): string {
   const date = new Date(dateStr + 'T00:00:00');
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -6,10 +6,10 @@ export function formatDate(dateStr: string, lang: 'en' | 'bn' = 'en'): string {
   tomorrow.setDate(tomorrow.getDate() + 1);
 
   if (date.getTime() === today.getTime()) {
-    return lang === 'bn' ? 'আজ' : 'Today';
+    return lang === 'hi' ? 'आज' : 'Today';
   }
   if (date.getTime() === tomorrow.getTime()) {
-    return lang === 'bn' ? 'আগামীকাল' : 'Tomorrow';
+    return lang === 'hi' ? 'कल' : 'Tomorrow';
   }
 
   const options: Intl.DateTimeFormatOptions = {
@@ -17,7 +17,7 @@ export function formatDate(dateStr: string, lang: 'en' | 'bn' = 'en'): string {
     month: 'long',
     day: 'numeric',
   };
-  const locale = lang === 'bn' ? 'bn-IN' : 'en-IN';
+  const locale = lang === 'hi' ? 'hi-IN' : 'en-IN';
   return date.toLocaleDateString(locale, options);
 }
 

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useLang } from '@/context/LangContext';
+import { useCity } from '@/context/CityContext';
 import { useSettings } from '@/hooks/useSettings';
 import { useUpcomingRides } from '@/hooks/useRides';
 import { useApprovedRoutes } from '@/hooks/useRoutes';
@@ -15,9 +16,11 @@ const RIDES_PER_PAGE = 4;
 
 export default function HomePage() {
   const { t } = useLang();
+  const { selectedCity } = useCity();
   const { settings } = useSettings();
-  const { rides, loading: ridesLoading } = useUpcomingRides(settings.upcomingRideDays);
-  const { routes, loading: routesLoading } = useApprovedRoutes();
+  const cityId = selectedCity?.id;
+  const { rides, loading: ridesLoading } = useUpcomingRides(settings.upcomingRideDays, cityId);
+  const { routes, loading: routesLoading } = useApprovedRoutes(cityId);
   const [visibleCount, setVisibleCount] = useState(RIDES_PER_PAGE);
 
   return (
@@ -25,10 +28,10 @@ export default function HomePage() {
       {/* Hero */}
       <section className="neu-card text-center py-10">
         <h1 className="text-3xl font-semibold mb-2">
-          Indas<span className="text-[var(--accent)]">Yatri</span>
+          Chal<span className="text-[var(--accent)]">Saath</span>
           <span className="ml-2 text-2xl">🚗</span>
         </h1>
-        <p className="text-[var(--text-secondary)] text-sm mb-1">ইন্দাসযাত্রী</p>
+        <p className="text-[var(--text-secondary)] text-sm mb-1">चलसाथ</p>
         <p className="mt-4 text-[var(--text-secondary)] max-w-md mx-auto">{t('home.hero')}</p>
         <p className="text-xs text-[var(--text-secondary)] mt-1 opacity-70">{t('home.heroSub')}</p>
 

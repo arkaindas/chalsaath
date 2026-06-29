@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
 import { getMessaging } from 'firebase-admin/messaging';
-import { getMatchingAlerts } from '@indasyatri/shared';
+import { getMatchingAlerts } from '@chalsaath/shared';
 
 function getAdminApp() {
   if (getApps().length > 0) return getApps()[0];

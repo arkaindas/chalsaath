@@ -6,10 +6,10 @@ import {
   searchRides,
   getDriverRides,
   type Ride,
-} from '@indasyatri/shared';
-import { todayString, addDays } from '@indasyatri/shared';
+} from '@chalsaath/shared';
+import { todayString, addDays } from '@chalsaath/shared';
 
-export function useUpcomingRides(upcomingDays = 7) {
+export function useUpcomingRides(upcomingDays = 7, cityId?: string) {
   const [rides, setRides] = useState<Ride[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -17,16 +17,16 @@ export function useUpcomingRides(upcomingDays = 7) {
   useEffect(() => {
     const today = todayString();
     const maxDate = addDays(today, upcomingDays);
-    getUpcomingRides(today, maxDate)
+    getUpcomingRides(today, maxDate, cityId)
       .then(setRides)
       .catch(() => setError('Failed to load rides'))
       .finally(() => setLoading(false));
-  }, [upcomingDays]);
+  }, [upcomingDays, cityId]);
 
   return { rides, loading, error };
 }
 
-export function useSearchRides(from: string, to: string, date: string) {
+export function useSearchRides(from: string, to: string, date: string, cityId?: string) {
   const [rides, setRides] = useState<Ride[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,25 +35,25 @@ export function useSearchRides(from: string, to: string, date: string) {
     if (!from || !to || !date) return;
     setLoading(true);
     setError(null);
-    searchRides(from, to, date)
+    searchRides(from, to, date, cityId)
       .then(setRides)
       .catch(() => setError('Failed to search rides'))
       .finally(() => setLoading(false));
-  }, [from, to, date]);
+  }, [from, to, date, cityId]);
 
   return { rides, loading, error };
 }
 
-export function useDriverRides(driverUid: string | undefined) {
+export function useDriverRides(driverUid: string | undefined, cityId?: string) {
   const [rides, setRides] = useState<Ride[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!driverUid) { setLoading(false); return; }
-    getDriverRides(driverUid)
+    getDriverRides(driverUid, cityId)
       .then(setRides)
       .finally(() => setLoading(false));
-  }, [driverUid]);
+  }, [driverUid, cityId]);
 
   return { rides, loading, setRides };
 }

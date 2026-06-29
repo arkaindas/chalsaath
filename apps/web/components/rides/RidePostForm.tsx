@@ -8,16 +8,18 @@ import { NeuButton } from '@/components/ui/NeuButton';
 import { VehicleSelect } from './VehicleSelect';
 import { useLang } from '@/context/LangContext';
 import { useAuth } from '@/context/AuthContext';
+import { useCity } from '@/context/CityContext';
 import { useApprovedRoutes } from '@/hooks/useRoutes';
 import { useToast } from '@/components/common/Toast';
-import { postRide } from '@indasyatri/shared';
-import { todayString } from '@indasyatri/shared';
-import type { Route } from '@indasyatri/shared';
+import { postRide } from '@chalsaath/shared';
+import { todayString } from '@chalsaath/shared';
+import type { Route } from '@chalsaath/shared';
 
 export function RidePostForm() {
   const { t } = useLang();
   const { user } = useAuth();
-  const { routes } = useApprovedRoutes();
+  const { selectedCity } = useCity();
+  const { routes } = useApprovedRoutes(selectedCity?.id);
   const { showToast } = useToast();
   const router = useRouter();
 
@@ -47,6 +49,7 @@ export function RidePostForm() {
     const finalModel = vehicleModel === 'Other' ? customModel : vehicleModel;
 
     const ridePayload = {
+      cityId: selectedCity?.id ?? selectedRoute.cityId ?? '',
       routeId,
       routeFrom: selectedRoute.from,
       routeTo: selectedRoute.to,

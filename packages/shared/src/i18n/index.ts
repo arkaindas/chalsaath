@@ -1,9 +1,9 @@
 import en from './en.json';
-import bn from './bn.json';
+import hi from './hi.json';
 
-type Lang = 'en' | 'bn';
+type Lang = 'en' | 'hi';
 
-const translations: Record<Lang, Record<string, unknown>> = { en, bn };
+const translations: Record<Lang, Record<string, unknown>> = { en, hi };
 
 function getNestedValue(obj: Record<string, unknown>, path: string): string {
   const keys = path.split('.');
@@ -20,9 +20,9 @@ export function t(lang: Lang, key: string): string {
 }
 
 export function getLang(stored: string | null): Lang {
-  if (stored === 'bn') return 'bn';
+  if (stored === 'hi') return 'hi';
   return 'en';
 }
 
-export { en, bn };
+export { en, hi };
 export type { Lang };

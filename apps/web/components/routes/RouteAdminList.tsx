@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { getPendingRoutes, approveRoute, rejectRoute, type Route } from '@indasyatri/shared';
+import { getPendingRoutes, approveRoute, rejectRoute, type Route } from '@chalsaath/shared';
 import { NeuButton } from '@/components/ui/NeuButton';
 import { NeuBadge } from '@/components/ui/NeuBadge';
 import { useLang } from '@/context/LangContext';
@@ -50,7 +50,7 @@ export function RouteAdminList() {
           <div>
             <div className="font-semibold">{route.from} → {route.to}</div>
             <div className="text-sm text-[var(--text-secondary)]">
-              {route.fromBn} → {route.toBn}
+              {route.fromHi} → {route.toHi}
               {route.submittedByName && ` · by ${route.submittedByName}`}
             </div>
           </div>

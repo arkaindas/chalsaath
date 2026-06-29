@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { useLang } from '@/context/LangContext';
+import { useCity } from '@/context/CityContext';
 import { LoginButton } from '@/components/auth/LoginButton';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { LangToggle } from '@/components/ui/LangToggle';
@@ -11,6 +12,9 @@ import { LangToggle } from '@/components/ui/LangToggle';
 export function Header() {
   const { user } = useAuth();
   const { t } = useLang();
+  const { selectedCity, openCitySheet } = useCity();
+
+  const isAdmin = user?.role === 'admin' || user?.role === 'superadmin';
 
   return (
     <header
@@ -24,10 +28,27 @@ export function Header() {
         {/* Logo */}
         <Link href="/" className="flex flex-col leading-tight">
           <span className="font-semibold text-lg">
-            Indas<span className="text-[var(--accent)]">Yatri</span>
+            Chal<span className="text-[var(--accent)]">Saath</span>
           </span>
-          <span className="text-xs text-[var(--text-secondary)] font-light">ইন্দাসযাত্রী</span>
+          <span className="text-xs text-[var(--text-secondary)] font-light">चलसाथ</span>
         </Link>
+
+        {/* City pill */}
+        {selectedCity && (
+          <button
+            onClick={openCitySheet}
+            className="hidden sm:flex items-center gap-1 text-sm px-3 py-1.5 rounded-full font-medium transition-colors"
+            style={{
+              background: 'var(--bg-secondary)',
+              color: 'var(--text-secondary)',
+              boxShadow: 'var(--shadow-sm)',
+            }}
+          >
+            <span>📍</span>
+            <span>{selectedCity.name}</span>
+            <span style={{ fontSize: 10 }}>▾</span>
+          </button>
+        )}
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-1">
@@ -41,7 +62,7 @@ export function Header() {
               <NavLink href="/alerts">{t('nav.alerts')}</NavLink>
             </>
           )}
-          {user?.role === 'admin' && (
+          {isAdmin && (
             <NavLink href="/admin">{t('nav.admin')}</NavLink>
           )}
         </nav>

@@ -7,7 +7,7 @@ import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { NeuBadge } from '@/components/ui/NeuBadge';
 import { useLang } from '@/context/LangContext';
 import { useAuth } from '@/context/AuthContext';
-import { getAllRoutes, type Route } from '@indasyatri/shared';
+import { getAllRoutes, type Route } from '@chalsaath/shared';
 
 function SuggestRouteContent() {
   const { t } = useLang();
@@ -39,7 +39,7 @@ function SuggestRouteContent() {
               <div key={route.id} className="neu-card flex justify-between items-center">
                 <div>
                   <div className="font-medium">{route.from} → {route.to}</div>
-                  <div className="text-sm text-[var(--text-secondary)]">{route.fromBn} → {route.toBn}</div>
+                  <div className="text-sm text-[var(--text-secondary)]">{route.fromHi} → {route.toHi}</div>
                 </div>
                 <NeuBadge
                   variant={

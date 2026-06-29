@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatDate } from '@indasyatri/shared';
+import { formatDate } from '@chalsaath/shared';
 import { useLang } from '@/context/LangContext';
 
 export function DateGroupHeader({ date }: { date: string }) {

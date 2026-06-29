@@ -1,11 +1,12 @@
-# CLAUDE.md — IndasYatri (ইন্দাসযাত্রী)
+﻿# CLAUDE.md — ChalSaath (चलसाथ)
 
 ## Project Overview
 
-IndasYatri is a hyperlocal cab/ride-sharing platform for small towns and rural areas in West Bengal, India. It connects private car owners who travel between towns (e.g., Indus → Kolkata) with passengers looking for affordable shared rides. No in-app payments — passengers connect with drivers via WhatsApp or phone call and settle with cash/UPI directly.
+ChalSaath is a hyperlocal cab/ride-sharing platform for cities and towns across India. It connects private car owners who travel between towns (e.g., Bankura → Kolkata, Raipur → Bilaspur) with passengers looking for affordable shared rides. No in-app payments — passengers connect with drivers via WhatsApp or phone call and settle with cash/UPI directly.
 
-**App Name:** IndasYatri (ইন্দাসযাত্রী)
-**Tagline:** "Share rides, save money, travel together" / "একসাথে যাত্রা, খরচ বাঁচান"
+**App Name:** ChalSaath (चलसाथ)
+**Tagline:** "Har safar mein ek saathi" (हर सफर में एक साथी)
+**Multi-city:** Each city is an independent ride market; users select their city on first visit.
 
 ---
 
@@ -14,7 +15,7 @@ IndasYatri is a hyperlocal cab/ride-sharing platform for small towns and rural a
 This is a **monorepo** designed for code sharing between web (Next.js) and future mobile (Expo React Native Android APK). All Firebase logic, types, constants, and utilities live in a shared package.
 
 ```
-indasyatri/
+chalsaath/
 ├── CLAUDE.md
 ├── package.json                  # Root workspace config
 ├── packages/
@@ -41,7 +42,7 @@ indasyatri/
 │       │   │   └── defaults.ts        # Default settings values
 │       │   ├── i18n/
 │       │   │   ├── en.json            # English translations
-│       │   │   ├── bn.json            # Bengali translations
+│       │   │   ├── hi.json            # Hindi translations
 │       │   │   └── index.ts           # i18n utility (getLang, t function)
 │       │   └── utils/
 │       │       ├── whatsapp.ts        # WhatsApp deeplink generator
@@ -119,7 +120,7 @@ indasyatri/
 │       │   │   ├── NeuBadge.tsx       # Status badges
 │       │   │   ├── NeuToggle.tsx      # Toggle switch
 │       │   │   ├── ThemeToggle.tsx    # Dark/light mode switch
-│       │   │   ├── LangToggle.tsx     # EN/BN language switch
+│       │   │   ├── LangToggle.tsx     # EN/हि language switch
 │       │   │   ├── WhatsAppButton.tsx # Green WhatsApp CTA
 │       │   │   └── CallButton.tsx     # Phone call CTA
 │       │   └── common/
@@ -163,7 +164,7 @@ indasyatri/
 
 ### Why Monorepo?
 
-The `packages/shared` folder contains ALL business logic, Firebase functions, types, constants, translations, and utilities. Both `apps/web` (Next.js) and future `apps/mobile` (Expo) import from `@indasyatri/shared`. This means:
+The `packages/shared` folder contains ALL business logic, Firebase functions, types, constants, translations, and utilities. Both `apps/web` (Next.js) and future `apps/mobile` (Expo) import from `@chalsaath/shared`. This means:
 
 - Firestore queries are written ONCE, used everywhere
 - Types are consistent across platforms
@@ -260,7 +261,7 @@ Scale:
 
 ### Logo
 
-Text-based logo: "IndasYatri" with a small car/road icon. Use an inline SVG or emoji 🚗. Bengali subtitle below: "ইন্দাসযাত্রী". Accent color for "Yatri" / "যাত্রী" part.
+Text-based logo: "ChalSaath" with a small car/road icon. Use an inline SVG or emoji 🚗. Bengali subtitle below: "चलसाथ". Accent color for "Yatri" / "যাত্রী" part.
 
 ---
 
@@ -299,7 +300,7 @@ interface User {
   tripsPosted: number;           // Auto-incremented
   tripsCompleted: number;        // Future use
   isBanned: boolean;
-  preferredLang: 'en' | 'bn';
+  preferredLang: 'en' | 'hi';
   preferredTheme: 'light' | 'dark' | 'system';
   createdAt: Timestamp;
   updatedAt: Timestamp;
@@ -313,8 +314,8 @@ interface Route {
   id: string;
   from: string;                  // Location name, e.g., "Indus"
   to: string;                   // Location name, e.g., "Kolkata"
-  fromBn: string;               // Bengali name, e.g., "ইন্দাস"
-  toBn: string;                 // Bengali name, e.g., "কলকাতা"
+  fromHi: string;               // Bengali name, e.g., "ইন্দাস"
+  toHi: string;                 // Bengali name, e.g., "কলকাতা"
   status: 'approved' | 'pending' | 'rejected';
   submittedBy: string | null;   // uid (null if admin-created)
   submittedByName: string | null;
@@ -399,7 +400,7 @@ interface RideAlert {
 interface AppSettings {
   upcomingRideDays: number;      // Default: 7 (configurable by admin)
   maxSeatsPerRide: number;       // Default: 7
-  appName: string;               // "IndasYatri"
+  appName: string;               // "ChalSaath"
   maintenanceMode: boolean;      // If true, show "under maintenance" page
 }
 ```
@@ -512,7 +513,7 @@ When user selects "Other" → show a text input for custom car name.
 
 ## Internationalization (i18n)
 
-Two languages: English (`en`) and Bengali (`bn`).
+Two languages: English (`en`) and Hindi (`hi`).
 
 ### Implementation
 
@@ -521,14 +522,14 @@ Two languages: English (`en`) and Bengali (`bn`).
 - `t(key)` function reads from JSON translation files
 - Toggle in header switches instantly (no page reload)
 - All UI strings, labels, placeholders, error messages, toasts MUST use `t(key)`
-- Route names have both `from`/`to` (English) and `fromBn`/`toBn` (Bengali)
+- Route names have both `from`/`to` (English) and `fromHi`/`toHi` (Bengali)
 
 ### Translation File Structure (en.json example)
 
 ```json
 {
   "app": {
-    "name": "IndasYatri",
+    "name": "ChalSaath",
     "tagline": "Share rides, save money, travel together"
   },
   "nav": {
@@ -621,7 +622,7 @@ Two languages: English (`en`) and Bengali (`bn`).
 }
 ```
 
-Create equivalent `bn.json` with full Bengali translations for every key.
+Create equivalent `bn.json` with full Hindi translations for every key.
 
 ---
 
@@ -629,7 +630,7 @@ Create equivalent `bn.json` with full Bengali translations for every key.
 
 ### 1. Homepage (`/`)
 
-**Header:** Logo (IndasYatri ইন্দাসযাত্রী) | Nav links | LangToggle (EN/বাং) | ThemeToggle (☀️/🌙) | LoginButton/UserAvatar
+**Header:** Logo (IndasYatri चलसाथ) | Nav links | LangToggle (EN/বাং) | ThemeToggle (☀️/🌙) | LoginButton/UserAvatar
 
 **Hero Section:**
 - Heading: "Your trusted ride-sharing companion for Bengal's small towns"
@@ -737,7 +738,7 @@ Create equivalent `bn.json` with full Bengali translations for every key.
 ### 8. Suggest Route (`/suggest-route`) — Protected Route
 
 - Form: From (text input) + To (text input) + optional notes
-- Bengali name inputs: FromBn + ToBn
+- Bengali name inputs: fromHi + toHi
 - On submit: creates route document with `status: 'pending'`
 - Show message: "Your route suggestion has been submitted for admin review"
 - List of user's previous suggestions with status
@@ -760,7 +761,7 @@ Create equivalent `bn.json` with full Bengali translations for every key.
   - On approve: set `status: 'approved'`, auto-create reverse route
   - On reject: set `status: 'rejected'`
 - **Approved tab:** All approved routes, toggle `isActive`, edit fare range
-- **Add New Route:** form with from, to, fromBn, toBn, distance, estimatedTime, suggestedFareMin, suggestedFareMax
+- **Add New Route:** form with from, to, fromHi, toHi, distance, estimatedTime, suggestedFareMin, suggestedFareMax
 
 ### 12. Admin: Rides (`/admin/rides`) — Admin Only
 
@@ -835,7 +836,7 @@ function generateCallLink(phone: string): string {
    {
      "title": "New ride on your route!",
      "body": "Indus → Kolkata on July 23 at 9 AM. ₹300/seat. 3 seats available.",
-     "click_action": "https://indasyatri.vercel.app/ride/{rideId}"
+     "click_action": "https://chalsaath.vercel.app/ride/{rideId}"
    }
    ```
 
@@ -853,12 +854,12 @@ On first admin login, provide a button or script to seed initial routes:
 
 ```typescript
 const SEED_ROUTES = [
-  { from: "Indus", to: "Kolkata", fromBn: "ইন্দাস", toBn: "কলকাতা", distance: "120 km", estimatedTime: "3 hours", suggestedFareMin: 250, suggestedFareMax: 400 },
-  { from: "Bankura", to: "Kolkata", fromBn: "বাঁকুড়া", toBn: "কলকাতা", distance: "230 km", estimatedTime: "5 hours", suggestedFareMin: 400, suggestedFareMax: 600 },
-  { from: "Bishnupur", to: "Kolkata", fromBn: "বিষ্ণুপুর", toBn: "কলকাতা", distance: "200 km", estimatedTime: "4.5 hours", suggestedFareMin: 350, suggestedFareMax: 550 },
-  { from: "Durgapur", to: "Kolkata", fromBn: "দুর্গাপুর", toBn: "কলকাতা", distance: "180 km", estimatedTime: "3.5 hours", suggestedFareMin: 300, suggestedFareMax: 500 },
-  { from: "Indus", to: "Bankura", fromBn: "ইন্দাস", toBn: "বাঁকুড়া", distance: "45 km", estimatedTime: "1.5 hours", suggestedFareMin: 100, suggestedFareMax: 200 },
-  { from: "Bankura", to: "Durgapur", fromBn: "বাঁকুড়া", toBn: "দুর্গাপুর", distance: "80 km", estimatedTime: "2 hours", suggestedFareMin: 150, suggestedFareMax: 250 },
+  { from: "Indus", to: "Kolkata", fromHi: "ইন্দাস", toHi: "কলকাতা", distance: "120 km", estimatedTime: "3 hours", suggestedFareMin: 250, suggestedFareMax: 400 },
+  { from: "Bankura", to: "Kolkata", fromHi: "বাঁকুড়া", toHi: "কলকাতা", distance: "230 km", estimatedTime: "5 hours", suggestedFareMin: 400, suggestedFareMax: 600 },
+  { from: "Bishnupur", to: "Kolkata", fromHi: "বিষ্ণুপুর", toHi: "কলকাতা", distance: "200 km", estimatedTime: "4.5 hours", suggestedFareMin: 350, suggestedFareMax: 550 },
+  { from: "Durgapur", to: "Kolkata", fromHi: "দুর্গাপুর", toHi: "কলকাতা", distance: "180 km", estimatedTime: "3.5 hours", suggestedFareMin: 300, suggestedFareMax: 500 },
+  { from: "Indus", to: "Bankura", fromHi: "ইন্দাস", toHi: "বাঁকুড়া", distance: "45 km", estimatedTime: "1.5 hours", suggestedFareMin: 100, suggestedFareMax: 200 },
+  { from: "Bankura", to: "Durgapur", fromHi: "বাঁকুড়া", toHi: "দুর্গাপুর", distance: "80 km", estimatedTime: "2 hours", suggestedFareMin: 150, suggestedFareMax: 250 },
 ];
 ```
 
@@ -922,7 +923,7 @@ FIREBASE_ADMIN_PRIVATE_KEY=
 ## Deployment
 
 - Deploy to Vercel via GitHub integration
-- Branch: `main` → production (`indasyatri.vercel.app`)
+- Branch: `main` → production (`chalsaath.vercel.app`)
 - Configure environment variables in Vercel dashboard
 - Firebase project: `indasyatri` (create in Firebase console)
 - Firestore location: `asia-south1` (Mumbai — closest to West Bengal)
@@ -934,7 +935,7 @@ FIREBASE_ADMIN_PRIVATE_KEY=
 When building the mobile app:
 
 1. Create `apps/mobile/` with Expo + Expo Router
-2. Install `@indasyatri/shared` as workspace dependency
+2. Install `@chalsaath/shared` as workspace dependency
 3. All Firebase functions, types, constants, translations come from shared package
 4. Only build mobile-specific UI components (React Native equivalents of web components)
 5. Use `@react-native-google-signin/google-signin` for Google Auth

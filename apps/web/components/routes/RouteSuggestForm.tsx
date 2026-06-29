@@ -5,18 +5,20 @@ import { NeuInput } from '@/components/ui/NeuInput';
 import { NeuButton } from '@/components/ui/NeuButton';
 import { useLang } from '@/context/LangContext';
 import { useAuth } from '@/context/AuthContext';
+import { useCity } from '@/context/CityContext';
 import { useToast } from '@/components/common/Toast';
-import { suggestRoute } from '@indasyatri/shared';
+import { suggestRoute } from '@chalsaath/shared';
 
 export function RouteSuggestForm({ onSuccess }: { onSuccess?: () => void }) {
   const { t } = useLang();
   const { user } = useAuth();
+  const { selectedCity } = useCity();
   const { showToast } = useToast();
 
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
-  const [fromBn, setFromBn] = useState('');
-  const [toBn, setToBn] = useState('');
+  const [fromHi, setFromHi] = useState('');
+  const [toHi, setToHi] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -26,10 +28,11 @@ export function RouteSuggestForm({ onSuccess }: { onSuccess?: () => void }) {
     setSubmitting(true);
     try {
       await suggestRoute({
+        cityId: selectedCity?.id ?? '',
         from,
         to,
-        fromBn,
-        toBn,
+        fromHi,
+        toHi,
         submittedBy: user.uid,
         submittedByName: user.name,
         distance: '',
@@ -38,7 +41,7 @@ export function RouteSuggestForm({ onSuccess }: { onSuccess?: () => void }) {
         suggestedFareMax: 0,
       });
       showToast(t('route.pending'), 'success');
-      setFrom(''); setTo(''); setFromBn(''); setToBn('');
+      setFrom(''); setTo(''); setFromHi(''); setToHi('');
       onSuccess?.();
     } catch {
       showToast(t('common.error'), 'error');
@@ -67,16 +70,16 @@ export function RouteSuggestForm({ onSuccess }: { onSuccess?: () => void }) {
       </div>
       <div className="grid sm:grid-cols-2 gap-4">
         <NeuInput
-          label={t('route.fromBn')}
-          placeholder="যেমন: ইন্দাস"
-          value={fromBn}
-          onChange={(e) => setFromBn(e.target.value)}
+          label={t('route.fromHi')}
+          placeholder="जैसे: इंदास"
+          value={fromHi}
+          onChange={(e) => setFromHi(e.target.value)}
         />
         <NeuInput
-          label={t('route.toBn')}
-          placeholder="যেমন: কলকাতা"
-          value={toBn}
-          onChange={(e) => setToBn(e.target.value)}
+          label={t('route.toHi')}
+          placeholder="जैसे: कोलकाता"
+          value={toHi}
+          onChange={(e) => setToHi(e.target.value)}
         />
       </div>
       <NeuButton

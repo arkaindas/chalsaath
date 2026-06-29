@@ -4,6 +4,7 @@ import React, { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useLang } from '@/context/LangContext';
+import { useCity } from '@/context/CityContext';
 import { useSearchRides } from '@/hooks/useRides';
 import { RideSearchForm } from '@/components/rides/RideSearchForm';
 import { RideList } from '@/components/rides/RideList';
@@ -12,12 +13,13 @@ import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 
 function SearchContent() {
   const { t } = useLang();
+  const { selectedCity } = useCity();
   const params = useSearchParams();
   const from = params.get('from') ?? '';
   const to = params.get('to') ?? '';
   const date = params.get('date') ?? '';
 
-  const { rides, loading } = useSearchRides(from, to, date);
+  const { rides, loading } = useSearchRides(from, to, date, selectedCity?.id);
 
   const hasSearch = from && to && date;
 

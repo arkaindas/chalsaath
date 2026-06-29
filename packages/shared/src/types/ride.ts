@@ -2,6 +2,7 @@ import { Timestamp } from 'firebase/firestore';
 
 export interface Ride {
   id: string;
+  cityId: string;
   routeId: string;
   routeFrom: string;
   routeTo: string;

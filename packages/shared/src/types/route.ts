@@ -2,10 +2,11 @@ import { Timestamp } from 'firebase/firestore';
 
 export interface Route {
   id: string;
+  cityId: string;
   from: string;
   to: string;
-  fromBn: string;
-  toBn: string;
+  fromHi: string;
+  toHi: string;
   status: 'approved' | 'pending' | 'rejected';
   submittedBy: string | null;
   submittedByName: string | null;

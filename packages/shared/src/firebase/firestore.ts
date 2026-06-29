@@ -25,6 +25,7 @@ import type { Ride } from '../types/ride';
 import type { Booking } from '../types/booking';
 import type { RideAlert } from '../types/alert';
 import type { AppSettings } from '../types/settings';
+import type { City } from '../types/city';
 
 function db() {
   return getFirestore(getFirebaseApp());
@@ -54,6 +55,9 @@ export async function createOrUpdateUser(
       phone: '',
       whatsapp: '',
       role: 'user',
+      adminCities: [],
+      selectedCity: '',
+      homeCities: [],
       tripsPosted: 0,
       tripsCompleted: 0,
       isBanned: false,
@@ -89,30 +93,65 @@ export async function banUser(uid: string, banned: boolean): Promise<void> {
   await updateDoc(doc(db(), 'users', uid), { isBanned: banned });
 }
 
+// ── Cities ─────────────────────────────────────────────────────────────────
+
+export async function getCities(): Promise<City[]> {
+  const q = query(collection(db(), 'cities'), where('isActive', '==', true));
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => ({ ...d.data(), id: d.id } as City));
+}
+
+export async function getAllCities(): Promise<City[]> {
+  const snap = await getDocs(collection(db(), 'cities'));
+  return snap.docs.map((d) => ({ ...d.data(), id: d.id } as City));
+}
+
+export async function getCity(cityId: string): Promise<City | null> {
+  const snap = await getDoc(doc(db(), 'cities', cityId));
+  return snap.exists() ? ({ ...snap.data(), id: snap.id } as City) : null;
+}
+
+export async function createCity(cityId: string, data: Omit<City, 'id' | 'createdAt'>): Promise<void> {
+  await setDoc(doc(db(), 'cities', cityId), {
+    ...data,
+    createdAt: serverTimestamp(),
+  });
+}
+
+export async function updateCity(cityId: string, data: Partial<City>): Promise<void> {
+  await updateDoc(doc(db(), 'cities', cityId), data);
+}
+
 // ── Routes ─────────────────────────────────────────────────────────────────
 
-export async function getApprovedRoutes(): Promise<Route[]> {
+export async function getApprovedRoutes(cityId?: string): Promise<Route[]> {
   const q = query(
     collection(db(), 'routes'),
     where('status', '==', 'approved'),
     where('isActive', '==', true)
   );
   const snap = await getDocs(q);
-  return snap.docs.map((d) => ({ ...d.data(), id: d.id } as Route));
+  const routes = snap.docs.map((d) => ({ ...d.data(), id: d.id } as Route));
+  if (cityId) return routes.filter((r) => r.cityId === cityId);
+  return routes;
 }
 
-export async function getAllRoutes(): Promise<Route[]> {
+export async function getAllRoutes(cityId?: string): Promise<Route[]> {
   const snap = await getDocs(collection(db(), 'routes'));
-  return snap.docs.map((d) => ({ ...d.data(), id: d.id } as Route));
+  const routes = snap.docs.map((d) => ({ ...d.data(), id: d.id } as Route));
+  if (cityId) return routes.filter((r) => r.cityId === cityId);
+  return routes;
 }
 
-export async function getPendingRoutes(): Promise<Route[]> {
+export async function getPendingRoutes(cityId?: string): Promise<Route[]> {
   // No orderBy — avoids composite index requirement. Sort client-side.
   const q = query(collection(db(), 'routes'), where('status', '==', 'pending'));
   const snap = await getDocs(q);
-  return snap.docs
+  const routes = snap.docs
     .map((d) => ({ ...d.data(), id: d.id } as Route))
     .sort((a, b) => tsMillis(b.createdAt) - tsMillis(a.createdAt));
+  if (cityId) return routes.filter((r) => r.cityId === cityId);
+  return routes;
 }
 
 export async function suggestRoute(
@@ -140,8 +179,9 @@ export async function approveRoute(routeId: string, route: Route): Promise<void>
   await addDoc(collection(db(), 'routes'), {
     from: route.to,
     to: route.from,
-    fromBn: route.toBn,
-    toBn: route.fromBn,
+    fromHi: route.toHi,
+    toHi: route.fromHi,
+    cityId: route.cityId,
     status: 'approved',
     submittedBy: null,
     submittedByName: null,
@@ -175,8 +215,9 @@ export async function addRoute(
   await addDoc(collection(db(), 'routes'), {
     from: data.to,
     to: data.from,
-    fromBn: data.toBn,
-    toBn: data.fromBn,
+    fromHi: data.toHi,
+    toHi: data.fromHi,
+    cityId: data.cityId,
     status: data.status,
     submittedBy: null,
     submittedByName: null,
@@ -199,7 +240,8 @@ export async function updateRoute(routeId: string, data: Partial<Route>): Promis
 
 export async function seedRoutes(
   seeds: Array<{
-    from: string; to: string; fromBn: string; toBn: string;
+    cityId: string;
+    from: string; to: string; fromHi: string; toHi: string;
     distance: string; estimatedTime: string;
     suggestedFareMin: number; suggestedFareMax: number;
   }>
@@ -221,21 +263,24 @@ export async function seedRoutes(
 
 export async function getUpcomingRides(
   todayStr: string,
-  maxDateStr: string
+  maxDateStr: string,
+  cityId?: string
 ): Promise<Ride[]> {
-  // Single-field where avoids composite index. Filter dates client-side.
+  // Single-field where avoids composite index. Filter dates/city client-side.
   const q = query(collection(db(), 'rides'), where('status', '==', 'active'));
   const snap = await getDocs(q);
   return snap.docs
     .map((d) => ({ ...d.data(), id: d.id } as Ride))
     .filter((r) => r.date >= todayStr && r.date <= maxDateStr)
+    .filter((r) => !cityId || r.cityId === cityId)
     .sort((a, b) => a.date.localeCompare(b.date) || a.departureTime.localeCompare(b.departureTime));
 }
 
 export async function searchRides(
   from: string,
   to: string,
-  date: string
+  date: string,
+  cityId?: string
 ): Promise<Ride[]> {
   const q = query(
     collection(db(), 'rides'),
@@ -246,6 +291,7 @@ export async function searchRides(
   return snap.docs
     .map((d) => ({ ...d.data(), id: d.id } as unknown as Ride))
     .filter((r) => r.date === date && r.status !== 'cancelled')
+    .filter((r) => !cityId || r.cityId === cityId)
     .sort((a, b) => a.departureTime.localeCompare(b.departureTime));
 }
 
@@ -254,19 +300,22 @@ export async function getRide(rideId: string): Promise<Ride | null> {
   return snap.exists() ? ({ ...snap.data(), id: snap.id } as Ride) : null;
 }
 
-export async function getDriverRides(driverUid: string): Promise<Ride[]> {
+export async function getDriverRides(driverUid: string, cityId?: string): Promise<Ride[]> {
   // No orderBy — avoids composite index. Sort by date+time client-side.
   const q = query(collection(db(), 'rides'), where('driverUid', '==', driverUid));
   const snap = await getDocs(q);
   return snap.docs
     .map((d) => ({ ...d.data(), id: d.id } as Ride))
+    .filter((r) => !cityId || r.cityId === cityId)
     .sort((a, b) => (b.date + b.departureTime).localeCompare(a.date + a.departureTime));
 }
 
-export async function getAllRides(): Promise<Ride[]> {
+export async function getAllRides(cityId?: string): Promise<Ride[]> {
   const q = query(collection(db(), 'rides'), orderBy('createdAt', 'desc'), limit(100));
   const snap = await getDocs(q);
-  return snap.docs.map((d) => ({ ...d.data(), id: d.id } as Ride));
+  const rides = snap.docs.map((d) => ({ ...d.data(), id: d.id } as Ride));
+  if (cityId) return rides.filter((r) => r.cityId === cityId);
+  return rides;
 }
 
 export async function postRide(
@@ -285,7 +334,6 @@ export async function postRide(
 
   // NOTE: rideCount on routes is NOT incremented here because Firestore
   // security rules only allow admins to update route documents.
-  // Route stats are visible in the admin panel via getAllRides().
 
   return ref.id;
 }
@@ -401,7 +449,7 @@ export async function getSettings(): Promise<AppSettings> {
     return {
       upcomingRideDays: 7,
       maxSeatsPerRide: 7,
-      appName: 'IndasYatri',
+      appName: 'ChalSaath',
       maintenanceMode: false,
     };
   }
@@ -415,7 +463,8 @@ export async function updateSettings(data: Partial<AppSettings>): Promise<void> 
 export function subscribeToUpcomingRides(
   todayStr: string,
   maxDateStr: string,
-  callback: (rides: Ride[]) => void
+  callback: (rides: Ride[]) => void,
+  cityId?: string
 ): () => void {
   // Single-field where avoids composite index. Filter/sort client-side.
   const q = query(collection(db(), 'rides'), where('status', '==', 'active'));
@@ -423,6 +472,7 @@ export function subscribeToUpcomingRides(
     const rides = snap.docs
       .map((d) => ({ ...d.data(), id: d.id } as Ride))
       .filter((r) => r.date >= todayStr && r.date <= maxDateStr)
+      .filter((r) => !cityId || r.cityId === cityId)
       .sort((a, b) => a.date.localeCompare(b.date) || a.departureTime.localeCompare(b.departureTime));
     callback(rides);
   });

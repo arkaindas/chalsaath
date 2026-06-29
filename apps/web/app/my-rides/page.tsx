@@ -17,8 +17,8 @@ import {
   generateSimpleWhatsAppLink,
   type Ride,
   type Booking,
-} from '@indasyatri/shared';
-import { formatTime } from '@indasyatri/shared';
+} from '@chalsaath/shared';
+import { formatTime } from '@chalsaath/shared';
 
 // ── Passengers expandable panel ────────────────────────────────────────────
 

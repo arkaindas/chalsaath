@@ -29,7 +29,7 @@ const config: Config = {
         'dark-accent': '#e8943a',
       },
       fontFamily: {
-        sans: ['Poppins', 'Noto Sans Bengali', 'sans-serif'],
+        sans: ['Poppins', 'Noto Sans Devanagari', 'sans-serif'],
       },
       borderRadius: {
         neu: '16px',

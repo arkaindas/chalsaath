@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Ride } from '@indasyatri/shared';
+import type { Ride } from '@chalsaath/shared';
 import { RideCard } from './RideCard';
 import { DateGroupHeader } from '@/components/common/DateGroupHeader';
 import { EmptyState } from '@/components/common/EmptyState';

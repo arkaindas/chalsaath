@@ -3,8 +3,8 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import type { Ride } from '@indasyatri/shared';
-import { formatTime } from '@indasyatri/shared';
+import type { Ride } from '@chalsaath/shared';
+import { formatTime } from '@chalsaath/shared';
 import { NeuBadge } from '@/components/ui/NeuBadge';
 import { WhatsAppButton } from '@/components/ui/WhatsAppButton';
 import { CallButton } from '@/components/ui/CallButton';

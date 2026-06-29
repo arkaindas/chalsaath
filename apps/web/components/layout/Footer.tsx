@@ -22,7 +22,7 @@ export function Footer() {
           </Link>
         </div>
         <p className="text-xs opacity-70">
-          © 2026 IndasYatri — Made for Bengal&apos;s small towns
+          © 2026 ChalSaath — Har safar mein ek saathi
         </p>
       </div>
     </footer>

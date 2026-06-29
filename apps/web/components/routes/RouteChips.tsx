@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useLang } from '@/context/LangContext';
-import type { Route } from '@indasyatri/shared';
+import type { Route } from '@chalsaath/shared';
 
 const ROUTES_VISIBLE = 8;
 
@@ -20,8 +20,8 @@ export function RouteChips({ routes }: { routes: Route[] }) {
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap gap-2">
         {visibleRoutes.map((route) => {
-          const fromLabel = lang === 'bn' ? route.fromBn : route.from;
-          const toLabel = lang === 'bn' ? route.toBn : route.to;
+          const fromLabel = lang === 'hi' ? route.fromHi : route.from;
+          const toLabel = lang === 'hi' ? route.toHi : route.to;
           return (
             <Link
               key={route.id}

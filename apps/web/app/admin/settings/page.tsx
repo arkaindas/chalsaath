@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useLang } from '@/context/LangContext';
 import { useSettings } from '@/hooks/useSettings';
 import { useToast } from '@/components/common/Toast';
-import { updateSettings } from '@indasyatri/shared';
+import { updateSettings } from '@chalsaath/shared';
 import { NeuInput } from '@/components/ui/NeuInput';
 import { NeuButton } from '@/components/ui/NeuButton';
 import { NeuToggle } from '@/components/ui/NeuToggle';

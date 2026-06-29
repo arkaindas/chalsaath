@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getUserAlerts, type RideAlert } from '@indasyatri/shared';
+import { getUserAlerts, type RideAlert } from '@chalsaath/shared';
 
 export function useAlerts(userUid: string | undefined) {
   const [alerts, setAlerts] = useState<RideAlert[]>([]);

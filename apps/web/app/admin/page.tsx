@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useLang } from '@/context/LangContext';
-import { getAllUsers, getAllRides, getApprovedRoutes, getPendingRoutes } from '@indasyatri/shared';
+import { getAllUsers, getAllRides, getApprovedRoutes, getPendingRoutes } from '@chalsaath/shared';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 
 interface Stats {

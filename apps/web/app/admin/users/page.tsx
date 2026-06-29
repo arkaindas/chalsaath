@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useLang } from '@/context/LangContext';
 import { useToast } from '@/components/common/Toast';
-import { getAllUsers, banUser, type User } from '@indasyatri/shared';
+import { getAllUsers, banUser, type User } from '@chalsaath/shared';
 import { NeuBadge } from '@/components/ui/NeuBadge';
 import { NeuButton } from '@/components/ui/NeuButton';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';

@@ -6,8 +6,8 @@ import {
   subscribeToAuthState,
   createOrUpdateUser,
   getUser,
-} from '@indasyatri/shared';
-import type { User } from '@indasyatri/shared';
+} from '@chalsaath/shared';
+import type { User } from '@chalsaath/shared';
 
 interface AuthContextValue {
   firebaseUser: FirebaseUser | null;

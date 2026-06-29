@@ -7,11 +7,14 @@ export interface User {
   photoURL: string;
   phone: string;
   whatsapp: string;
-  role: 'user' | 'admin';
+  role: 'user' | 'admin' | 'superadmin';
+  adminCities?: string[];
+  selectedCity: string;
+  homeCities: string[];
   tripsPosted: number;
   tripsCompleted: number;
   isBanned: boolean;
-  preferredLang: 'en' | 'bn';
+  preferredLang: 'en' | 'hi';
   preferredTheme: 'light' | 'dark' | 'system';
   createdAt: Timestamp;
   updatedAt: Timestamp;

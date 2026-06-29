@@ -1,6 +1,6 @@
 import React from 'react';
-import type { Ride } from '@indasyatri/shared';
-import { generateWhatsAppLink } from '@indasyatri/shared';
+import type { Ride } from '@chalsaath/shared';
+import { generateWhatsAppLink } from '@chalsaath/shared';
 
 interface WhatsAppButtonProps {
   ride: Ride;

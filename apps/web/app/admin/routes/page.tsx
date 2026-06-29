@@ -2,15 +2,17 @@
 
 import React, { useEffect, useState } from 'react';
 import { useLang } from '@/context/LangContext';
+import { useAuth } from '@/context/AuthContext';
+import { useCity } from '@/context/CityContext';
 import { useToast } from '@/components/common/Toast';
 import {
   getAllRoutes, addRoute, updateRoute, approveRoute, rejectRoute,
   seedRoutes, type Route
-} from '@indasyatri/shared';
-import { SEED_ROUTES } from '@indasyatri/shared';
+} from '@chalsaath/shared';
+import { SEED_ROUTES } from '@chalsaath/shared';
 import { NeuButton } from '@/components/ui/NeuButton';
-import { NeuBadge } from '@/components/ui/NeuBadge';
 import { NeuInput } from '@/components/ui/NeuInput';
+import { NeuSelect } from '@/components/ui/NeuSelect';
 import { NeuToggle } from '@/components/ui/NeuToggle';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 
@@ -18,6 +20,8 @@ type Tab = 'pending' | 'approved';
 
 export default function AdminRoutesPage() {
   const { t } = useLang();
+  const { user } = useAuth();
+  const { cities, selectedCity } = useCity();
   const { showToast } = useToast();
   const [routes, setRoutes] = useState<Route[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,21 +29,27 @@ export default function AdminRoutesPage() {
   const [showAdd, setShowAdd] = useState(false);
   const [seeding, setSeeding] = useState(false);
 
+  // For superadmin: city filter
+  const isSuperAdmin = user?.role === 'superadmin';
+  const [adminCityFilter, setAdminCityFilter] = useState(selectedCity?.id ?? '');
+
   // Add form state
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
-  const [fromBn, setFromBn] = useState('');
-  const [toBn, setToBn] = useState('');
+  const [fromHi, setFromHi] = useState('');
+  const [toHi, setToHi] = useState('');
   const [dist, setDist] = useState('');
   const [time, setTime] = useState('');
   const [fareMin, setFareMin] = useState('');
   const [fareMax, setFareMax] = useState('');
 
   const load = () => {
-    getAllRoutes().then(setRoutes).finally(() => setLoading(false));
+    getAllRoutes(isSuperAdmin ? (adminCityFilter || undefined) : selectedCity?.id)
+      .then(setRoutes)
+      .finally(() => setLoading(false));
   };
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [adminCityFilter, selectedCity?.id]);
 
   const filtered = routes.filter((r) => r.status === tab);
 
@@ -62,8 +72,10 @@ export default function AdminRoutesPage() {
 
   const handleAddRoute = async (e: React.FormEvent) => {
     e.preventDefault();
+    const cityId = isSuperAdmin ? (adminCityFilter || (selectedCity?.id ?? '')) : (selectedCity?.id ?? '');
     await addRoute({
-      from, to, fromBn, toBn,
+      cityId,
+      from, to, fromHi, toHi,
       distance: dist, estimatedTime: time,
       suggestedFareMin: Number(fareMin),
       suggestedFareMax: Number(fareMax),
@@ -72,7 +84,7 @@ export default function AdminRoutesPage() {
     });
     showToast('Route added!', 'success');
     setShowAdd(false);
-    setFrom(''); setTo(''); setFromBn(''); setToBn(''); setDist(''); setTime(''); setFareMin(''); setFareMax('');
+    setFrom(''); setTo(''); setFromHi(''); setToHi(''); setDist(''); setTime(''); setFareMin(''); setFareMax('');
     load();
   };
 
@@ -105,12 +117,24 @@ export default function AdminRoutesPage() {
         </div>
       </div>
 
+      {isSuperAdmin && (
+        <NeuSelect
+          label={t('admin.selectCity')}
+          options={[
+            { value: '', label: t('admin.allCities') },
+            ...cities.map((c) => ({ value: c.id, label: c.name })),
+          ]}
+          value={adminCityFilter}
+          onChange={(e) => setAdminCityFilter(e.target.value)}
+        />
+      )}
+
       {showAdd && (
         <form onSubmit={handleAddRoute} className="neu-card grid sm:grid-cols-2 gap-4">
           <NeuInput label={t('route.from')} value={from} onChange={(e) => setFrom(e.target.value)} required placeholder="Indas" />
           <NeuInput label={t('route.to')} value={to} onChange={(e) => setTo(e.target.value)} required placeholder="Kolkata" />
-          <NeuInput label={t('route.fromBn')} value={fromBn} onChange={(e) => setFromBn(e.target.value)} placeholder="ইন্দাস" />
-          <NeuInput label={t('route.toBn')} value={toBn} onChange={(e) => setToBn(e.target.value)} placeholder="কলকাতা" />
+          <NeuInput label={t('route.fromHi')} value={fromHi} onChange={(e) => setFromHi(e.target.value)} placeholder="इंदास" />
+          <NeuInput label={t('route.toHi')} value={toHi} onChange={(e) => setToHi(e.target.value)} placeholder="कोलकाता" />
           <NeuInput label={t('route.distance')} value={dist} onChange={(e) => setDist(e.target.value)} placeholder="120 km" />
           <NeuInput label={t('route.estimatedTime')} value={time} onChange={(e) => setTime(e.target.value)} placeholder="3 hours" />
           <NeuInput label="Fare Min (₹)" type="number" value={fareMin} onChange={(e) => setFareMin(e.target.value)} placeholder="250" />
@@ -140,8 +164,9 @@ export default function AdminRoutesPage() {
             <div>
               <div className="font-semibold">{route.from} → {route.to}</div>
               <div className="text-sm text-[var(--text-secondary)]">
-                {route.fromBn} → {route.toBn} · ₹{route.suggestedFareMin}–{route.suggestedFareMax}
+                {route.fromHi} → {route.toHi} · ₹{route.suggestedFareMin}–{route.suggestedFareMax}
                 {route.submittedByName && ` · by ${route.submittedByName}`}
+                {isSuperAdmin && route.cityId && ` · 📍${route.cityId}`}
               </div>
             </div>
             <div className="flex items-center gap-2 flex-wrap">
