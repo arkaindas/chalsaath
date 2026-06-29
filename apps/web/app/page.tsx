@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useLang } from '@/context/LangContext';
 import { useSettings } from '@/hooks/useSettings';
@@ -11,11 +11,14 @@ import { RouteChips } from '@/components/routes/RouteChips';
 import { NeuButton } from '@/components/ui/NeuButton';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 
+const RIDES_PER_PAGE = 4;
+
 export default function HomePage() {
   const { t } = useLang();
   const { settings } = useSettings();
   const { rides, loading: ridesLoading } = useUpcomingRides(settings.upcomingRideDays);
   const { routes, loading: routesLoading } = useApprovedRoutes();
+  const [visibleCount, setVisibleCount] = useState(RIDES_PER_PAGE);
 
   return (
     <div className="flex flex-col gap-10">
@@ -61,15 +64,40 @@ export default function HomePage() {
         {ridesLoading ? (
           <LoadingSpinner />
         ) : (
-          <RideList
-            rides={rides}
-            emptyMessage={t('home.noRides')}
-            emptyAction={
-              <Link href="/offer">
-                <NeuButton variant="accent">Post the first ride</NeuButton>
-              </Link>
-            }
-          />
+          <>
+            <RideList
+              rides={rides.slice(0, visibleCount)}
+              emptyMessage={t('home.noRides')}
+              emptyAction={
+                <Link href="/offer">
+                  <NeuButton variant="accent">Post the first ride</NeuButton>
+                </Link>
+              }
+            />
+            {visibleCount < rides.length ? (
+              <button
+                onClick={() => setVisibleCount(prev => prev + RIDES_PER_PAGE)}
+                style={{
+                  width: '100%',
+                  padding: '14px',
+                  marginTop: '16px',
+                  background: 'transparent',
+                  border: '2px solid var(--accent)',
+                  borderRadius: '12px',
+                  color: 'var(--accent)',
+                  fontWeight: 600,
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                }}
+              >
+                Show More Rides ({rides.length - visibleCount} more)
+              </button>
+            ) : rides.length > RIDES_PER_PAGE ? (
+              <p style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: '13px', marginTop: '12px' }}>
+                Showing all {rides.length} rides
+              </p>
+            ) : null}
+          </>
         )}
       </section>
 

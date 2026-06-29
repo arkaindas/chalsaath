@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { signInWithGoogle, signOut } from '@indasyatri/shared';
 import { useAuth } from '@/context/AuthContext';
 import { useLang } from '@/context/LangContext';
@@ -16,13 +17,15 @@ export function LoginButton() {
     return (
       <div className="flex items-center gap-2">
         {user.photoURL && (
-          <Image
-            src={user.photoURL}
-            alt={user.name}
-            width={32}
-            height={32}
-            className="rounded-full"
-          />
+          <Link href="/profile" title={user.name} className="rounded-full hover:opacity-80 transition-opacity" style={{ display: 'flex' }}>
+            <Image
+              src={user.photoURL}
+              alt={user.name}
+              width={32}
+              height={32}
+              className="rounded-full object-cover"
+            />
+          </Link>
         )}
         <button
           onClick={() => signOut()}
