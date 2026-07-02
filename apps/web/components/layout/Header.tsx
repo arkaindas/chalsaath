@@ -37,7 +37,7 @@ export function Header() {
         {selectedCity && (
           <button
             onClick={openCitySheet}
-            className="hidden sm:flex items-center gap-1 text-sm px-3 py-1.5 rounded-full font-medium transition-colors"
+            className="flex items-center gap-1 text-sm px-3 py-1.5 rounded-full font-medium transition-colors min-w-0 shrink-0"
             style={{
               background: 'var(--bg-secondary)',
               color: 'var(--text-secondary)',
@@ -45,7 +45,7 @@ export function Header() {
             }}
           >
             <span>📍</span>
-            <span>{selectedCity.name}</span>
+            <span className="truncate max-w-[90px] sm:max-w-none">{selectedCity.name}</span>
             <span style={{ fontSize: 10 }}>▾</span>
           </button>
         )}

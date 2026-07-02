@@ -5,6 +5,7 @@ import { NeuSelect } from '@/components/ui/NeuSelect';
 import { NeuButton } from '@/components/ui/NeuButton';
 import { useLang } from '@/context/LangContext';
 import { useAuth } from '@/context/AuthContext';
+import { useCity } from '@/context/CityContext';
 import { useApprovedRoutes } from '@/hooks/useRoutes';
 import { useToast } from '@/components/common/Toast';
 import { createAlert, requestNotificationPermission } from '@chalsaath/shared';
@@ -13,7 +14,8 @@ import { todayString } from '@chalsaath/shared';
 export function AlertSubscribeForm({ onCreated }: { onCreated?: () => void }) {
   const { t } = useLang();
   const { user } = useAuth();
-  const { routes } = useApprovedRoutes();
+  const { selectedCity } = useCity();
+  const { routes } = useApprovedRoutes(selectedCity?.id);
   const { showToast } = useToast();
 
   const [routeId, setRouteId] = useState('');

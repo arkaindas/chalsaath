@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { NeuSelect } from '@/components/ui/NeuSelect';
 import { NeuButton } from '@/components/ui/NeuButton';
 import { useLang } from '@/context/LangContext';
+import { useCity } from '@/context/CityContext';
 import { useApprovedRoutes } from '@/hooks/useRoutes';
 import { todayString } from '@chalsaath/shared';
 
@@ -18,7 +19,8 @@ interface Props {
 export function RideSearchForm({ defaultFrom = '', defaultTo = '', defaultDate = '', onSearch }: Props) {
   const { t } = useLang();
   const router = useRouter();
-  const { routes } = useApprovedRoutes();
+  const { selectedCity } = useCity();
+  const { routes } = useApprovedRoutes(selectedCity?.id);
 
   const [from, setFrom] = useState(defaultFrom);
   const [to, setTo] = useState(defaultTo);
