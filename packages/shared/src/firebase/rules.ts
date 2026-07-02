@@ -13,6 +13,11 @@ service cloud.firestore {
                     && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'isBanned']);
     }
 
+    match /cities/{cityId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
     match /routes/{routeId} {
       allow read: if true;
       allow create: if request.auth != null;
@@ -48,7 +53,12 @@ service cloud.firestore {
 
     function isAdmin() {
       return request.auth != null
-             && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+             && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'superadmin'];
+    }
+
+    function isSuperAdmin() {
+      return request.auth != null
+             && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'superadmin';
     }
   }
 }

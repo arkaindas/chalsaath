@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useLang } from '@/context/LangContext';
+import { useAuth } from '@/context/AuthContext';
 
 const adminLinks = [
   { href: '/admin', label: 'admin.dashboard', icon: '📊' },
@@ -13,14 +14,20 @@ const adminLinks = [
   { href: '/admin/settings', label: 'admin.settings', icon: '⚙️' },
 ];
 
+const superAdminLinks = [
+  { href: '/admin/cities', label: 'admin.cities', icon: '🏙️' },
+];
+
 export function AdminSidebar() {
   const pathname = usePathname();
   const { t } = useLang();
+  const { user } = useAuth();
+  const links = user?.role === 'superadmin' ? [...adminLinks, ...superAdminLinks] : adminLinks;
 
   return (
     <aside className="w-56 shrink-0">
       <nav className="neu-card !p-3 flex flex-col gap-1">
-        {adminLinks.map((link) => {
+        {links.map((link) => {
           const isActive = pathname === link.href;
           return (
             <Link
