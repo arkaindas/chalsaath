@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { useLang } from '@/context/LangContext';
+import { useAuth } from '@/context/AuthContext';
+import { useCity } from '@/context/CityContext';
 import { useToast } from '@/components/common/Toast';
 import { getAllRides, updateRideStatus, type Ride } from '@chalsaath/shared';
 import { formatTime } from '@chalsaath/shared';
@@ -11,13 +13,19 @@ import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 
 export default function AdminRidesPage() {
   const { t } = useLang();
+  const { user } = useAuth();
+  const { selectedCity } = useCity();
   const { showToast } = useToast();
   const [rides, setRides] = useState<Ride[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const isSuperAdmin = user?.role === 'superadmin';
+  const cityId = isSuperAdmin ? undefined : selectedCity?.id;
+
   useEffect(() => {
-    getAllRides().then(setRides).finally(() => setLoading(false));
-  }, []);
+    setLoading(true);
+    getAllRides(cityId).then(setRides).finally(() => setLoading(false));
+  }, [cityId]);
 
   const handleCancel = async (rideId: string) => {
     try {

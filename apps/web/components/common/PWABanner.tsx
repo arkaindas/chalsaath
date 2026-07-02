@@ -51,7 +51,7 @@ export default function PWABanner() {
     }}>
       <div style={{
         width: 44, height: 44, borderRadius: 12, flexShrink: 0,
-        background: '#d4781c', display: 'flex', alignItems: 'center',
+        background: 'var(--accent)', display: 'flex', alignItems: 'center',
         justifyContent: 'center', fontSize: 22,
       }}>🚗</div>
 
@@ -66,7 +66,7 @@ export default function PWABanner() {
 
       {!isIOS && (
         <button onClick={handleInstall} style={{
-          background: '#d4781c', color: '#fff', border: 'none',
+          background: 'var(--accent)', color: '#fff', border: 'none',
           borderRadius: 10, padding: '8px 14px', fontWeight: 600,
           fontSize: 13, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0,
         }}>Install</button>

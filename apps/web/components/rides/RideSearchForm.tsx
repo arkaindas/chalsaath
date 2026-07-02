@@ -32,14 +32,15 @@ export function RideSearchForm({ defaultFrom = '', defaultTo = '', defaultDate =
     if (defaultDate) setDate(defaultDate);
   }, [defaultFrom, defaultTo, defaultDate]);
 
-  const fromOptions = Array.from(new Set(routes.map((r) => r.from))).map((v) => ({
-    value: v,
-    label: v,
-  }));
+  const fromOptions = Array.from(new Set(routes.map((r) => r.from)))
+    .sort()
+    .map((v) => ({ value: v, label: v }));
 
-  const toOptions = routes
-    .filter((r) => !from || r.from === from)
-    .map((r) => ({ value: r.to, label: r.to }));
+  const toOptions = Array.from(
+    new Set(routes.filter((r) => !from || r.from === from).map((r) => r.to))
+  )
+    .sort()
+    .map((v) => ({ value: v, label: v }));
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

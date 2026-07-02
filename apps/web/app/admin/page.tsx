@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { useLang } from '@/context/LangContext';
+import { useAuth } from '@/context/AuthContext';
+import { useCity } from '@/context/CityContext';
 import { getAllUsers, getAllRides, getApprovedRoutes, getPendingRoutes } from '@chalsaath/shared';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 
@@ -14,11 +16,17 @@ interface Stats {
 
 export default function AdminDashboard() {
   const { t } = useLang();
+  const { user } = useAuth();
+  const { selectedCity } = useCity();
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const isSuperAdmin = user?.role === 'superadmin';
+  const cityId = isSuperAdmin ? undefined : selectedCity?.id;
+
   useEffect(() => {
-    Promise.all([getAllUsers(), getAllRides(), getApprovedRoutes(), getPendingRoutes()])
+    setLoading(true);
+    Promise.all([getAllUsers(), getAllRides(cityId), getApprovedRoutes(cityId), getPendingRoutes(cityId)])
       .then(([users, rides, routes, pending]) => {
         setStats({
           users: users.length,
@@ -28,7 +36,7 @@ export default function AdminDashboard() {
         });
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [cityId]);
 
   if (loading) return <LoadingSpinner />;
 
